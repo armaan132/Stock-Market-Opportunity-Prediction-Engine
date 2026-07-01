@@ -5,7 +5,7 @@ The project is structured as a small, end-to-end machine learning platform. Each
 ## System Flow
 
 ```text
-Raw CSV files or synthetic demo data
+S&P 500 list, SEC filings, yfinance prices, CSV files, or synthetic demo data
         |
         v
 SQLite ingestion layer
@@ -42,7 +42,8 @@ src/market_opportunity/
   modeling.py                   Model definition, validation, metrics, artifacts
   pipeline.py                   Ingestion and training orchestration
   storage.py                    SQLite persistence and loading
-  synthetic.py                  Reproducible demo universe generation
+  real_data.py                  Real S&P 500, SEC, and yfinance data ingestion
+  synthetic.py                  Offline demo universe generation
   explain.py                    Feature-driver helpers
 
 sql/
@@ -55,15 +56,16 @@ tests/
 ## Key Design Decisions
 
 - The default local database is SQLite because it is simple to run and review. The schema is intentionally compatible with a later PostgreSQL migration.
-- The pipeline uses a synthetic data fallback so the complete project can be demonstrated without paid financial APIs.
+- The default data source uses real public APIs: SEC Company Facts for annual fundamentals and yfinance for price returns.
+- Synthetic data is retained as an explicit offline/demo mode, not as the primary project claim.
 - Validation is time-based rather than randomly shuffled. This better reflects financial forecasting, where future observations must not leak into training.
 - The saved prediction table contains the latest fiscal year only, while metrics are computed on a multi-year time holdout.
 - Generated model artifacts and processed datasets are excluded from git to keep the repository lightweight and reproducible.
 
 ## Extension Points
 
-- Replace synthetic data with SEC, Financial Modeling Prep, Alpha Vantage, Polygon, or another fundamentals provider.
 - Move from SQLite to PostgreSQL for larger datasets and multi-user workflows.
+- Add Financial Modeling Prep, Alpha Vantage, Polygon, or another paid fundamentals provider for richer fields.
 - Add XGBoost, calibrated classifiers, or regression models for expected return estimation.
 - Add SHAP summaries for deeper local and global explanation.
 - Add scheduled retraining and model version tracking.

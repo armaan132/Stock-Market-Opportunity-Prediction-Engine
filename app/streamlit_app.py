@@ -17,9 +17,20 @@ st.set_page_config(page_title="Market Opportunity Engine", layout="wide")
 
 st.title("Market Opportunity Engine")
 
+source = st.sidebar.selectbox("Data Source", ["real", "csv", "synthetic"])
+company_limit = st.sidebar.number_input(
+    "S&P 500 Companies",
+    min_value=25,
+    max_value=503,
+    value=120,
+    step=25,
+    disabled=source != "real",
+)
+min_year = st.sidebar.number_input("Minimum Fiscal Year", min_value=2000, max_value=2025, value=2014)
+
 if st.sidebar.button("Run Pipeline", type="primary"):
-    with st.spinner("Training ensemble model with time-based validation..."):
-        train()
+    with st.spinner("Fetching data and training ensemble model with time-based validation..."):
+        train(source=source, limit=int(company_limit), min_year=int(min_year))
     st.sidebar.success("Pipeline complete")
 
 if not SETTINGS.predictions_csv.exists():

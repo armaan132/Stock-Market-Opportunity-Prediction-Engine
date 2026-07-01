@@ -35,7 +35,7 @@ Tracked files include source code, tests, documentation, schema definitions, and
 
 Generated files are intentionally ignored:
 
-- Raw demo CSVs
+- Raw API or demo CSVs
 - Processed modeling frames
 - SQLite databases
 - Saved model binaries

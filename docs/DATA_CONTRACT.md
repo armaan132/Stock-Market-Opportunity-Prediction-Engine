@@ -1,6 +1,14 @@
 # Data Contract
 
-The pipeline accepts two raw CSV files. If either file is missing, the project generates a reproducible synthetic dataset with the same schema.
+The default pipeline fetches real S&P 500 data from public APIs and writes normalized CSV files to `data/raw/`. The same schema can also be supplied manually through CSV files. Synthetic data is available only through `--source synthetic` for offline demos and tests.
+
+## Real API Sources
+
+| Source | Purpose |
+| --- | --- |
+| Wikipedia S&P 500 table | Current S&P 500 ticker universe, company names, and sectors |
+| SEC Company Facts API | Annual financial statement fundamentals from public filings |
+| yfinance | Historical stock prices and S&P 500 benchmark prices |
 
 ## `data/raw/financials.csv`
 
@@ -54,4 +62,5 @@ One row per company and fiscal year. The return columns must be measured after t
 
 - Do not use future returns, future fundamentals, analyst revisions, or post-observation labels as model features.
 - `stock_return_next_12m` and `sp500_return_next_12m` are labels only.
+- Forward-return labels are created only when the ending calendar year has a December close. Partial current-year returns are excluded.
 - Any future data provider integration should preserve point-in-time availability.

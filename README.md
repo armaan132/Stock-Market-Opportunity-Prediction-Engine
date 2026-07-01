@@ -20,8 +20,9 @@ The emphasis is on understanding the underlying concepts, making design decision
 
 This repository now contains a runnable market opportunity prediction platform:
 
-- A data ingestion layer that reads `data/raw/financials.csv` and `data/raw/prices.csv`
-- A synthetic 120-company, 10+ year demo universe when raw CSVs are not present
+- A real-data ingestion layer for S&P 500 companies using SEC Company Facts and yfinance
+- A CSV ingestion path for saved or vendor-provided financial datasets
+- A synthetic demo mode for offline testing only
 - SQLite storage for financial statements and forward returns
 - Feature engineering for growth, profitability, leverage, valuation, cash flow, R&D, and sector variables
 - Time-based validation to avoid training on future observations
@@ -43,7 +44,7 @@ make train
 make app
 ```
 
-If `data/raw/financials.csv` and `data/raw/prices.csv` do not exist, the pipeline generates a realistic synthetic dataset so the full system can be run immediately.
+By default, `make train` fetches real S&P 500 company fundamentals from the SEC and real market return data from yfinance. The default command limits the run to 120 S&P 500 companies so the project is practical on a laptop. Use `--limit 0` to request the full index.
 
 Equivalent manual commands:
 
@@ -55,6 +56,26 @@ pip install -e .
 market-opportunity train
 streamlit run app/streamlit_app.py
 ```
+
+Real-data examples:
+
+```bash
+market-opportunity train --source real --limit 120 --min-year 2014
+market-opportunity train --source real --limit 0 --min-year 2014
+```
+
+Offline/demo examples:
+
+```bash
+market-opportunity train --source synthetic
+market-opportunity train --source csv
+```
+
+Real API sources:
+
+- S&P 500 constituents: Wikipedia's S&P 500 constituents table
+- Annual fundamentals: SEC Company Facts API
+- Stock and S&P 500 benchmark prices: yfinance
 
 ## Documentation
 

@@ -30,12 +30,15 @@ The model uses features available at fiscal year `T`:
 - Employee growth
 - Sector
 
+In real-data mode, these values are derived from SEC Company Facts filings and joined to forward price returns from yfinance.
+
 ## Validation
 
 The validation split is time-based:
 
 - Train on earlier fiscal years
 - Evaluate on the most recent holdout years
+- Exclude partial current-year forward returns
 
 This is more appropriate than a random split for financial forecasting because it reduces the risk of future information leaking into training.
 
