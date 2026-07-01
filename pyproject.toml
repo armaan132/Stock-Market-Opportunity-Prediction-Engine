@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "market-opportunity-engine"
+version = "0.1.0"
+description = "End-to-end market opportunity prediction platform using company fundamentals and ensemble learning."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "joblib>=1.4",
+    "matplotlib>=3.8",
+    "numpy>=1.26",
+    "pandas>=2.2",
+    "scikit-learn>=1.4",
+    "streamlit>=1.36",
+    "xgboost>=2.0",
+]
+
+[project.optional-dependencies]
+explain = ["shap>=0.45"]
+dev = ["pytest>=8.0", "ruff>=0.5"]
+
+[project.scripts]
+market-opportunity = "market_opportunity.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
