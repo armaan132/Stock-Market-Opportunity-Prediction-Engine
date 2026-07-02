@@ -20,6 +20,7 @@ class Settings:
     prices_csv: Path = PROJECT_ROOT / "data" / "raw" / "prices.csv"
     predictions_csv: Path = PROJECT_ROOT / "data" / "processed" / "latest_predictions.csv"
     metrics_csv: Path = PROJECT_ROOT / "data" / "processed" / "model_metrics.csv"
+    backtest_csv: Path = PROJECT_ROOT / "data" / "processed" / "backtest_results.csv"
     feature_importance_csv: Path = PROJECT_ROOT / "data" / "processed" / "feature_importance.csv"
     model_path: Path = PROJECT_ROOT / "models" / "opportunity_model.joblib"
 

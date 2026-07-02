@@ -39,6 +39,7 @@ if not SETTINGS.predictions_csv.exists():
 
 predictions = pd.read_csv(SETTINGS.predictions_csv)
 metrics = pd.read_csv(SETTINGS.metrics_csv)
+backtest = pd.read_csv(SETTINGS.backtest_csv) if SETTINGS.backtest_csv.exists() else pd.DataFrame()
 importance = pd.read_csv(SETTINGS.feature_importance_csv)
 
 top_count = st.sidebar.slider("Companies", 10, 100, 25, step=5)
@@ -52,6 +53,15 @@ col1.metric("Companies Scored", f"{len(predictions):,}")
 col2.metric("ROC AUC", f"{metrics.loc[0, 'roc_auc']:.3f}")
 col3.metric("Average Precision", f"{metrics.loc[0, 'average_precision']:.3f}")
 col4.metric("Brier Score", f"{metrics.loc[0, 'brier_score']:.3f}")
+
+if not backtest.empty:
+    summary = backtest[backtest["fiscal_year"] == "all_holdout_years"]
+    if not summary.empty:
+        row = summary.iloc[0]
+        b1, b2, b3 = st.columns(3)
+        b1.metric("Backtest Portfolio", f"{row['portfolio_return']:.1%}")
+        b2.metric("Backtest S&P 500", f"{row['sp500_return']:.1%}")
+        b3.metric("Excess Return", f"{row['excess_return']:.1%}")
 
 left, right = st.columns([2, 1])
 
@@ -79,3 +89,7 @@ with right:
 
 st.subheader("Probability Distribution")
 st.bar_chart(predictions.set_index("ticker")["opportunity_probability"].sort_values(ascending=False).head(50))
+
+if not backtest.empty:
+    st.subheader("Holdout Backtest")
+    st.dataframe(backtest, hide_index=True, use_container_width=True)

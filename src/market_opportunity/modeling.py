@@ -20,6 +20,7 @@ class TrainingResult:
     model: Pipeline
     metrics: pd.DataFrame
     predictions: pd.DataFrame
+    backtest: pd.DataFrame
     feature_importance: pd.DataFrame
 
 
@@ -113,6 +114,7 @@ def train_time_validated_model(data: pd.DataFrame, random_state: int = 42) -> Tr
         ]
     ].copy()
     holdout_predictions["opportunity_probability"] = probabilities
+    backtest = backtest_top_ranked_portfolio(holdout_predictions)
 
     latest_year = holdout_predictions["fiscal_year"].max()
     predictions = holdout_predictions[holdout_predictions["fiscal_year"] == latest_year].copy()
@@ -120,7 +122,50 @@ def train_time_validated_model(data: pd.DataFrame, random_state: int = 42) -> Tr
     predictions = predictions.sort_values("opportunity_probability", ascending=False)
 
     importance = extract_feature_importance(model)
-    return TrainingResult(model=model, metrics=metrics, predictions=predictions, feature_importance=importance)
+    return TrainingResult(
+        model=model,
+        metrics=metrics,
+        predictions=predictions,
+        backtest=backtest,
+        feature_importance=importance,
+    )
+
+
+def backtest_top_ranked_portfolio(
+    holdout_predictions: pd.DataFrame,
+    top_n: int = 20,
+) -> pd.DataFrame:
+    rows: list[dict[str, float | int | str]] = []
+    for fiscal_year, year_frame in holdout_predictions.groupby("fiscal_year"):
+        selected = year_frame.sort_values("opportunity_probability", ascending=False).head(top_n)
+        portfolio_return = selected["stock_return_next_12m"].mean()
+        benchmark_return = selected["sp500_return_next_12m"].mean()
+        rows.append(
+            {
+                "strategy": f"top_{top_n}_equal_weight",
+                "fiscal_year": int(fiscal_year),
+                "companies_selected": int(len(selected)),
+                "portfolio_return": portfolio_return,
+                "sp500_return": benchmark_return,
+                "excess_return": portfolio_return - benchmark_return,
+                "beat_sp500": bool(portfolio_return > benchmark_return),
+            }
+        )
+
+    backtest = pd.DataFrame(rows).sort_values("fiscal_year").reset_index(drop=True)
+    if backtest.empty:
+        return backtest
+
+    summary = {
+        "strategy": f"top_{top_n}_equal_weight_summary",
+        "fiscal_year": "all_holdout_years",
+        "companies_selected": int(backtest["companies_selected"].sum()),
+        "portfolio_return": backtest["portfolio_return"].mean(),
+        "sp500_return": backtest["sp500_return"].mean(),
+        "excess_return": backtest["excess_return"].mean(),
+        "beat_sp500": bool(backtest["excess_return"].mean() > 0),
+    }
+    return pd.concat([backtest, pd.DataFrame([summary])], ignore_index=True)
 
 
 def extract_feature_importance(model: Pipeline) -> pd.DataFrame:
@@ -139,12 +184,20 @@ def extract_feature_importance(model: Pipeline) -> pd.DataFrame:
     return importance.sort_values("importance", ascending=False).reset_index(drop=True)
 
 
-def save_artifacts(result: TrainingResult, model_path, predictions_path, metrics_path, importance_path) -> None:
+def save_artifacts(
+    result: TrainingResult,
+    model_path,
+    predictions_path,
+    metrics_path,
+    backtest_path,
+    importance_path,
+) -> None:
     model_path.parent.mkdir(parents=True, exist_ok=True)
     predictions_path.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(result.model, model_path)
     result.predictions.to_csv(predictions_path, index=False)
     result.metrics.to_csv(metrics_path, index=False)
+    result.backtest.to_csv(backtest_path, index=False)
     result.feature_importance.to_csv(importance_path, index=False)
 
 

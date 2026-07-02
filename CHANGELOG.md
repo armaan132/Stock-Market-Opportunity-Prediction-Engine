@@ -14,3 +14,4 @@ All notable project changes should be summarized here so the repository has a re
 - Added a Streamlit dashboard for model metrics, opportunity rankings, probability distribution, and feature drivers.
 - Added tests, linting configuration, packaging metadata, and repository documentation.
 - Added real S&P 500 ingestion using Wikipedia constituents, SEC Company Facts fundamentals, and yfinance price returns.
+- Added holdout backtest output comparing top-ranked model picks with S&P 500 returns.

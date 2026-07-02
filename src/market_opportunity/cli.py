@@ -60,7 +60,9 @@ def main() -> None:
         )
         print("Training complete")
         print(result.metrics.to_string(index=False))
+        print(result.backtest.to_string(index=False))
         print(f"Predictions: {SETTINGS.predictions_csv}")
+        print(f"Backtest: {SETTINGS.backtest_csv}")
         print(f"Model: {SETTINGS.model_path}")
 
 

@@ -54,6 +54,7 @@ One row per company and fiscal year. The return columns must be measured after t
 | `data/processed/market_opportunity.sqlite` | SQLite database containing raw financials and return labels |
 | `data/processed/modeling_frame.csv` | Engineered feature table used for model training |
 | `data/processed/model_metrics.csv` | Time-holdout model metrics |
+| `data/processed/backtest_results.csv` | Equal-weight top-ranked holdout portfolio compared with S&P 500 returns |
 | `data/processed/latest_predictions.csv` | Latest-year ranked opportunity probabilities |
 | `data/processed/feature_importance.csv` | Random Forest feature importance values from the ensemble |
 | `models/opportunity_model.joblib` | Serialized trained pipeline |

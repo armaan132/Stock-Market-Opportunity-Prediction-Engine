@@ -59,8 +59,11 @@ The training command writes:
 - Average precision
 - Accuracy
 - Brier score
+- Top-ranked equal-weight portfolio backtest versus the S&P 500
 
 ROC AUC and average precision evaluate ranking quality. Brier score evaluates probability calibration quality.
+
+The backtest is an evaluation artifact, not a guarantee. It compares the model's top-ranked holdout companies against the S&P 500 over the same next-12-month windows.
 
 ## Interpretation
 

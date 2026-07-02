@@ -87,6 +87,7 @@ def train(
         settings.model_path,
         settings.predictions_csv,
         settings.metrics_csv,
+        settings.backtest_csv,
         settings.feature_importance_csv,
     )
     return result

@@ -105,6 +105,7 @@ Generated artifacts are written to:
 - `data/processed/market_opportunity.sqlite`
 - `data/processed/modeling_frame.csv`
 - `data/processed/model_metrics.csv`
+- `data/processed/backtest_results.csv`
 - `data/processed/latest_predictions.csv`
 - `data/processed/feature_importance.csv`
 - `models/opportunity_model.joblib`
@@ -120,6 +121,7 @@ Generated artifacts are written to:
 - Engineer predictive financial features
 - Train and compare multiple machine learning models
 - Evaluate model performance using appropriate statistical metrics
+- Backtest top-ranked model picks against the S&P 500 on holdout years
 - Interpret predictions using explainable AI techniques
 - Build an interactive dashboard for model visualization
 
